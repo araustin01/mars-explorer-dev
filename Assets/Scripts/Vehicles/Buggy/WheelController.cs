@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class WheelController : MonoBehaviour
 {
-    public WheelCollider WCollider;
-    public Transform WheelMesh;
-    public bool WheelTurn;
+    public Transform wheelModel;
+
+    [HideInInspector] public WheelCollider WheelCollider;
+
+    // Create properties for the CarControl script
+    // (You should enable/disable these via the 
+    // Editor Inspector window)
+    public bool steerable;
+    public bool motorized;
+
+    Vector3 position;
+    Quaternion rotation;
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        WheelCollider = GetComponent<WheelCollider>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (WheelTurn)
-            WheelMesh.localEulerAngles = new Vector3(WheelMesh.localEulerAngles.x, WCollider.steerAngle - WheelMesh.localEulerAngles.z, WheelMesh.localEulerAngles.z);
-            
-        WheelMesh.Rotate(WCollider.rpm / 60 * 360 * Time.deltaTime, 0, 0);
+        // Get the Wheel collider's world pose values and
+        // use them to set the wheel model's position and rotation
+        WheelCollider.GetWorldPose(out position, out rotation);
+        wheelModel.transform.position = position;
+        wheelModel.transform.rotation = rotation;
     }
 }
